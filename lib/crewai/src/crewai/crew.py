@@ -1068,10 +1068,14 @@ class Crew(FlowTrackable, BaseModel):
         }
         self._task_output_handler.update(task_index, log)
 
+    from crewai.metrics import metric_time
+
+    @metric_time
     def _run_sequential_process(self) -> CrewOutput:
         """Executes tasks sequentially and returns the final output."""
         return self._execute_tasks(self.tasks)
 
+    @metric_time
     def _run_hierarchical_process(self) -> CrewOutput:
         """Creates and assigns a manager agent to complete the tasks."""
         self._create_manager_agent()

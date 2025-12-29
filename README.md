@@ -37,6 +37,9 @@
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT">
   </a>
+  <a href="https://codecov.io/gh/crewAIInc/crewAI">
+    <img src="https://codecov.io/gh/crewAIInc/crewAI/branch/main/graph/badge.svg" alt="Codecov Coverage" />
+  </a>
 </p>
 
 <p align="center">
@@ -65,6 +68,30 @@ standard for enterprise-ready AI automation.
 # CrewAI AOP Suite
 
 CrewAI AOP Suite is a comprehensive bundle tailored for organizations that require secure, scalable, and easy-to-manage agent-driven automation.
+
+## Quickstart & Troubleshooting
+
+### Setup Rápido
+```bash
+poetry install --with dev
+poetry run pytest
+```
+
+### Exemplo Executável
+```python
+from crewai.agent.core import Agent
+from crewai.crew import Crew
+
+agent = Agent(name="Demo", goal="Testar execução.")
+crew = Crew(agents=[agent])
+result = crew.run(task="Diga olá!")
+print(result)
+```
+
+### Troubleshooting
+- Se algum teste falhar, rode `pytest -v` para detalhes.
+- Verifique dependências com `poetry show`.
+- Logs agora aparecem em formato JSON para facilitar análise.
 
 You can try one part of the suite the [Crew Control Plane for free](https://app.crewai.com)
 

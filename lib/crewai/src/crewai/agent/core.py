@@ -282,6 +282,9 @@ class Agent(BaseAgent):
 
         return any(getattr(self.crew, attr) for attr in memory_attributes)
 
+    from crewai.metrics import metric_time
+
+    @metric_time
     def execute_task(
         self,
         task: Task,

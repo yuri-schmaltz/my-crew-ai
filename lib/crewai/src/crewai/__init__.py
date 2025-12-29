@@ -1,7 +1,26 @@
 import threading
 from typing import Any
 import urllib.request
-import warnings
+import threading
+import logging
+import json
+
+# Inicialização global de logging estruturado
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        log_record = {
+            "timestamp": self.formatTime(record, self.datefmt),
+            "level": record.levelname,
+            "name": record.name,
+            "message": record.getMessage(),
+        }
+        if record.exc_info:
+            log_record["exception"] = self.formatException(record.exc_info)
+        return json.dumps(log_record)
+
+handler = logging.StreamHandler()
+handler.setFormatter(JsonFormatter())
+logging.basicConfig(level=logging.INFO, handlers=[handler])
 
 from crewai.agent.core import Agent
 from crewai.crew import Crew
