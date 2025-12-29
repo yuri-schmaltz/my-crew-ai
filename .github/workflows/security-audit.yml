@@ -1,0 +1,8 @@
+- name: Security audit with pip-audit
+  run: |
+    pip install pip-audit
+    pip-audit
+- name: Security audit with safety
+  run: |
+    pip install safety
+    safety check
