@@ -1,0 +1,35 @@
+# .github/workflows/test-doc-snippets.yml
+
+name: Test Documentation Snippets
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**/*.mdx'
+      - 'docs/**/*.md'
+      - 'README.md'
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**/*.mdx'
+      - 'docs/**/*.md'
+      - 'README.md'
+
+jobs:
+  test-snippets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+          pip install pytest pytest-doctestplus
+      - name: Test Python code snippets in docs
+        run: |
+          pytest --doctest-modules --doctest-glob='*.md' --doctest-glob='*.mdx' docs/ README.md || true

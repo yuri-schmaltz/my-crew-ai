@@ -25,10 +25,14 @@ jobs:
         pip install flake8
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Type check with mypy
+      run: |
+        pip install mypy
+        mypy lib/crewai/src lib/crewai-tools/src lib/devtools/src
     - name: Run tests with coverage
       run: |
         pip install pytest pytest-cov
-        pytest --cov=lib/crewai/src --cov=lib/crewai-tools/src --cov=lib/devtools/src --cov-report=xml
+        pytest --cov=lib/crewai/src --cov=lib/crewai-tools/src --cov=lib/devtools/src --cov-report=xml --cov-fail-under=80
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:

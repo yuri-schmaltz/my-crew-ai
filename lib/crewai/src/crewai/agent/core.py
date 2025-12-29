@@ -284,6 +284,9 @@ class Agent(BaseAgent):
 
     from crewai.metrics import metric_time
 
+    from opentelemetry import trace
+    tracer = trace.get_tracer(__name__)
+
     @metric_time
     def execute_task(
         self,
@@ -306,26 +309,27 @@ class Agent(BaseAgent):
             ValueError: If the max execution time is not a positive integer.
             RuntimeError: If the agent execution fails for other reasons.
         """
-        handle_reasoning(self, task)
-        self._inject_date_to_task(task)
+        with self.tracer.start_as_current_span("agent.execute_task"):
+            handle_reasoning(self, task)
+            self._inject_date_to_task(task)
 
-        if self.tools_handler:
-            self.tools_handler.last_used_tool = None
+            if self.tools_handler:
+                self.tools_handler.last_used_tool = None
 
-        task_prompt = task.prompt()
-        task_prompt = build_task_prompt_with_schema(task, task_prompt, self.i18n)
-        task_prompt = format_task_with_context(task_prompt, context, self.i18n)
+            task_prompt = task.prompt()
+            task_prompt = build_task_prompt_with_schema(task, task_prompt, self.i18n)
+            task_prompt = format_task_with_context(task_prompt, context, self.i18n)
 
-        if self._is_any_available_memory():
-            crewai_event_bus.emit(
-                self,
-                event=MemoryRetrievalStartedEvent(
-                    task_id=str(task.id) if task else None,
-                    source_type="agent",
-                    from_agent=self,
-                    from_task=task,
-                ),
-            )
+            if self._is_any_available_memory():
+                crewai_event_bus.emit(
+                    self,
+                    event=MemoryRetrievalStartedEvent(
+                        task_id=str(task.id) if task else None,
+                        source_type="agent",
+                        from_agent=self,
+                        from_task=task,
+                    ),
+                )
 
             start_time = time.time()
 

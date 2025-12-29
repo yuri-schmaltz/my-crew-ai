@@ -1070,16 +1070,22 @@ class Crew(FlowTrackable, BaseModel):
 
     from crewai.metrics import metric_time
 
+
+    from opentelemetry import trace
+    tracer = trace.get_tracer(__name__)
+
     @metric_time
     def _run_sequential_process(self) -> CrewOutput:
         """Executes tasks sequentially and returns the final output."""
-        return self._execute_tasks(self.tasks)
+        with self.tracer.start_as_current_span("crew.run_sequential_process"):
+            return self._execute_tasks(self.tasks)
 
     @metric_time
     def _run_hierarchical_process(self) -> CrewOutput:
         """Creates and assigns a manager agent to complete the tasks."""
-        self._create_manager_agent()
-        return self._execute_tasks(self.tasks)
+        with self.tracer.start_as_current_span("crew.run_hierarchical_process"):
+            self._create_manager_agent()
+            return self._execute_tasks(self.tasks)
 
     def _create_manager_agent(self) -> None:
         if self.manager_agent is not None:
