@@ -28,7 +28,7 @@ jobs:
     - name: Run tests with coverage
       run: |
         pip install pytest pytest-cov
-        pytest --cov=lib/crewai/src --cov=lib/crewai-tools/src --cov-report=xml
+        pytest --cov=lib/crewai/src --cov=lib/crewai-tools/src --cov=lib/devtools/src --cov-report=xml
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
